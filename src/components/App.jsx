@@ -42,7 +42,7 @@ const App = () => {
   };
 
   const handleChange = ev => {
-    const { name, value } = ev.target;
+    const { value } = ev.target;
     setFilter(value);
   };
 

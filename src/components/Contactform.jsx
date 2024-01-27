@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const FormAddContacts = ({ handleAddContact }) => {
-  const [formData, setFormData] = useState({
+  const [formDataa, setFormData] = useState({
     name: '',
     number: '',
   });
@@ -13,7 +13,7 @@ const FormAddContacts = ({ handleAddContact }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    handleAddContact(formData, clean);
+    handleAddContact(formDataa, clean);
   };
 
   const clean = () => setFormData({ name: '', number: '' });
@@ -30,7 +30,7 @@ const FormAddContacts = ({ handleAddContact }) => {
           name="name"
           id="name"
           onChange={handleChange}
-          value={formData.name}
+          value={formDataa.name}
           required
         />
       </div>
@@ -43,7 +43,7 @@ const FormAddContacts = ({ handleAddContact }) => {
           className="form-control"
           name="number"
           id="number"
-          value={formData.number}
+          value={formDataa.number}
           onChange={handleChange}
           required
         />
