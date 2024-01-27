@@ -1,61 +1,58 @@
-import { Component } from 'react';
+import React, { useState } from 'react';
 
-export class FormAddContacts extends Component {
-  state = {
+const FormAddContacts = ({ handleAddContact }) => {
+  const [formData, setFormData] = useState({
     name: '',
     number: '',
+  });
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({ ...prevData, [name]: value }));
   };
 
-  handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-  };
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    this.props.handleAddContact(
-      {
-        name: this.state.name,
-        number: this.state.number,
-      },
-      this.clean
-    );
+    handleAddContact(formData, clean);
   };
-  clean = () => this.setState({ name: '', number: '' });
-  render() {
-    return (
-      <form onSubmit={e => this.handleSubmit(e)}>
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">
-            Name
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            name="name"
-            id="name"
-            onChange={e => this.handleChange(e)}
-            value={this.state.name}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="number" className="form-label">
-            Number
-          </label>
-          <input
-            type="tel"
-            className="form-control"
-            name="number"
-            id="number"
-            value={this.state.number}
-            onChange={e => this.handleChange(e)}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Add contact
-        </button>
-      </form>
-    );
-  }
-}
+
+  const clean = () => setFormData({ name: '', number: '' });
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label htmlFor="name" className="form-label">
+          Name
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          name="name"
+          id="name"
+          onChange={handleChange}
+          value={formData.name}
+          required
+        />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="number" className="form-label">
+          Number
+        </label>
+        <input
+          type="tel"
+          className="form-control"
+          name="number"
+          id="number"
+          value={formData.number}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <button type="submit" className="btn btn-primary">
+        Add contact
+      </button>
+    </form>
+  );
+};
+
+export { FormAddContacts };

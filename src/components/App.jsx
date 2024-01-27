@@ -1,36 +1,32 @@
-import { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormAddContacts } from './Contactform';
 import { nanoid } from 'nanoid';
 import { ContactsList } from './Contactlist';
 import { Filter } from './Filter';
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+const App = () => {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
 
-  componentDidMount() {
+  useEffect(() => {
     const storedContacts = localStorage.getItem('contacts');
     if (storedContacts) {
-      this.setState({ contacts: JSON.parse(storedContacts) });
+      setContacts(JSON.parse(storedContacts));
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-  handleAddContact = (contact, callbackCleanForm) => {
+  const handleAddContact = (contact, callbackCleanForm) => {
     const newContact = {
       id: nanoid(),
       name: contact.name,
       number: contact.number,
     };
 
-    const isContact = this.state.contacts.some(
+    const isContact = contacts.some(
       obj =>
         obj.name.trim().toLowerCase() === newContact.name.trim().toLowerCase()
     );
@@ -41,45 +37,39 @@ export class App extends Component {
       return;
     }
 
-    this.setState(prevState => {
-      return {
-        contacts: [...prevState.contacts, newContact],
-      };
-    });
-
+    setContacts(prevContacts => [...prevContacts, newContact]);
     callbackCleanForm();
   };
 
-  handleChange = ev => {
+  const handleChange = ev => {
     const { name, value } = ev.target;
-    this.setState({ [name]: value });
+    setFilter(value);
   };
 
-  handleDeleteContact = e => {
+  const handleDeleteContact = e => {
     const idBtn = e.target.id;
-    const newContacts = this.state.contacts.filter(({ id }) => id !== idBtn);
-    this.setState({ contacts: newContacts });
+    const newContacts = contacts.filter(({ id }) => id !== idBtn);
+    setContacts(newContacts);
   };
 
-  arreyContactsFiltered = () =>
-    this.state.contacts.filter(
+  const arreyContactsFiltered = () =>
+    contacts.filter(
       ({ name }) =>
-        !this.state.filter ||
-        name.toLowerCase().includes(this.state.filter.trim().toLowerCase())
+        !filter || name.toLowerCase().includes(filter.trim().toLowerCase())
     );
 
-  render() {
-    return (
-      <div className="maine_box ">
-        <h1 className="h1 mt-2">Phonebook</h1>
-        <FormAddContacts handleAddContact={this.handleAddContact} />
-        <h2 className="h2 mt-3">Contacts</h2>
-        <Filter state={this.state} handleChange={this.handleChange} />
-        <ContactsList
-          array={this.arreyContactsFiltered()}
-          handleDeleteContact={this.handleDeleteContact}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="maine_box ">
+      <h1 className="h1 mt-2">Phonebook</h1>
+      <FormAddContacts handleAddContact={handleAddContact} />
+      <h2 className="h2 mt-3">Contacts</h2>
+      <Filter state={filter} handleChange={handleChange} />
+      <ContactsList
+        array={arreyContactsFiltered()}
+        handleDeleteContact={handleDeleteContact}
+      />
+    </div>
+  );
+};
+
+export { App };
